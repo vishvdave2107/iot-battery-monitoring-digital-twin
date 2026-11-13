@@ -1,0 +1,333 @@
+[
+  {
+    "id": "tab_battery_demo",
+    "type": "tab",
+    "label": "EV Battery Dashboard",
+    "disabled": false,
+    "info": "Simulated battery readings for dashboard testing."
+  },
+  {
+    "id": "inject_battery_demo",
+    "type": "inject",
+    "z": "tab_battery_demo",
+    "name": "Generate sample readings",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "5",
+    "crontab": "",
+    "once": true,
+    "onceDelay": "1",
+    "topic": "battery",
+    "payload": "",
+    "payloadType": "date",
+    "x": 180,
+    "y": 160,
+    "wires": [
+      [
+        "function_battery_demo"
+      ]
+    ]
+  },
+  {
+    "id": "function_battery_demo",
+    "type": "function",
+    "z": "tab_battery_demo",
+    "name": "Create simulated battery data",
+    "func": "const voltage = +(48 + Math.random() * 2).toFixed(2);\nconst current = +(2 + Math.random() * 4).toFixed(2);\nconst power = +(voltage * current).toFixed(1);\nconst temperature = +(25 + Math.random() * 8).toFixed(1);\nconst soc = +(55 + Math.random() * 10).toFixed(0);\nconst alarm = temperature > 32 ? \"WARNING: HIGH TEMPERATURE\" : \"Normal\";\nreturn [\n  {payload: voltage + \" V\", topic: \"Voltage\"},\n  {payload: current + \" A\", topic: \"Current\"},\n  {payload: power + \" W\", topic: \"Power\"},\n  {payload: temperature + \" \u00b0C\", topic: \"Temperature\"},\n  {payload: soc + \" %\", topic: \"State of Charge\"},\n  {payload: alarm, topic: \"Alarm Status\"},\n  {payload: voltage, topic: \"Voltage (V)\"}\n];",
+    "outputs": 7,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 440,
+    "y": 160,
+    "wires": [
+      [
+        "ui_text_voltage"
+      ],
+      [
+        "ui_text_current"
+      ],
+      [
+        "ui_text_power"
+      ],
+      [
+        "ui_text_temperature"
+      ],
+      [
+        "ui_text_soc"
+      ],
+      [
+        "ui_text_alarm"
+      ],
+      [
+        "ui_chart_voltage"
+      ]
+    ]
+  },
+  {
+    "id": "ui_base_battery",
+    "type": "ui-base",
+    "name": "EV Battery Dashboard",
+    "path": "/dashboard",
+    "appIcon": "",
+    "includeClientData": true,
+    "acceptsClientConfig": [
+      "ui-notification",
+      "ui-control"
+    ],
+    "showPathInSidebar": false,
+    "headerContent": "page",
+    "navigationStyle": "default",
+    "titleBarStyle": "default",
+    "showReconnectNotification": true,
+    "notificationDisplayTime": 1,
+    "showDisconnectNotification": true,
+    "allowInstall": false
+  },
+  {
+    "id": "ui_page_battery",
+    "type": "ui-page",
+    "name": "Battery Monitor",
+    "ui": "ui_base_battery",
+    "path": "/battery",
+    "icon": "dashboard",
+    "layout": "grid",
+    "theme": "ui_theme_battery",
+    "breakpoints": [
+      {
+        "name": "Default",
+        "px": 0,
+        "cols": 3
+      },
+      {
+        "name": "Tablet",
+        "px": 576,
+        "cols": 6
+      },
+      {
+        "name": "Desktop",
+        "px": 768,
+        "cols": 9
+      }
+    ],
+    "order": 1
+  },
+  {
+    "id": "ui_theme_battery",
+    "type": "ui-theme",
+    "name": "Battery Theme",
+    "colors": {
+      "surface": "#ffffff",
+      "primary": "#0094CE",
+      "bgPage": "#eeeeee",
+      "groupBg": "#ffffff",
+      "groupOutline": "#cccccc"
+    },
+    "sizes": {
+      "density": "default",
+      "pagePadding": "12px",
+      "groupGap": "12px",
+      "groupBorderRadius": "4px",
+      "widgetGap": "12px"
+    }
+  },
+  {
+    "id": "ui_group_battery",
+    "type": "ui-group",
+    "name": "Live Battery Readings (Simulated)",
+    "page": "ui_page_battery",
+    "width": "9",
+    "height": "1",
+    "order": 1,
+    "showTitle": true,
+    "className": "",
+    "visible": "true",
+    "disabled": "false",
+    "groupType": "default"
+  },
+  {
+    "id": "ui_text_voltage",
+    "type": "ui-text",
+    "z": "tab_battery_demo",
+    "group": "ui_group_battery",
+    "name": "Voltage",
+    "label": "Voltage",
+    "order": 1,
+    "width": 3,
+    "height": 1,
+    "format": "{{msg.payload}}",
+    "layout": "row-spread",
+    "style": false,
+    "font": "",
+    "fontSize": 16,
+    "color": "",
+    "className": "",
+    "x": 760,
+    "y": 300,
+    "wires": []
+  },
+  {
+    "id": "ui_text_current",
+    "type": "ui-text",
+    "z": "tab_battery_demo",
+    "group": "ui_group_battery",
+    "name": "Current",
+    "label": "Current",
+    "order": 2,
+    "width": 3,
+    "height": 1,
+    "format": "{{msg.payload}}",
+    "layout": "row-spread",
+    "style": false,
+    "font": "",
+    "fontSize": 16,
+    "color": "",
+    "className": "",
+    "x": 760,
+    "y": 340,
+    "wires": []
+  },
+  {
+    "id": "ui_text_power",
+    "type": "ui-text",
+    "z": "tab_battery_demo",
+    "group": "ui_group_battery",
+    "name": "Power",
+    "label": "Power",
+    "order": 3,
+    "width": 3,
+    "height": 1,
+    "format": "{{msg.payload}}",
+    "layout": "row-spread",
+    "style": false,
+    "font": "",
+    "fontSize": 16,
+    "color": "",
+    "className": "",
+    "x": 760,
+    "y": 380,
+    "wires": []
+  },
+  {
+    "id": "ui_text_temperature",
+    "type": "ui-text",
+    "z": "tab_battery_demo",
+    "group": "ui_group_battery",
+    "name": "Temperature",
+    "label": "Temperature",
+    "order": 4,
+    "width": 3,
+    "height": 1,
+    "format": "{{msg.payload}}",
+    "layout": "row-spread",
+    "style": false,
+    "font": "",
+    "fontSize": 16,
+    "color": "",
+    "className": "",
+    "x": 760,
+    "y": 420,
+    "wires": []
+  },
+  {
+    "id": "ui_text_soc",
+    "type": "ui-text",
+    "z": "tab_battery_demo",
+    "group": "ui_group_battery",
+    "name": "State of Charge",
+    "label": "State of Charge",
+    "order": 5,
+    "width": 3,
+    "height": 1,
+    "format": "{{msg.payload}}",
+    "layout": "row-spread",
+    "style": false,
+    "font": "",
+    "fontSize": 16,
+    "color": "",
+    "className": "",
+    "x": 760,
+    "y": 460,
+    "wires": []
+  },
+  {
+    "id": "ui_text_alarm",
+    "type": "ui-text",
+    "z": "tab_battery_demo",
+    "group": "ui_group_battery",
+    "name": "Alarm Status",
+    "label": "Alarm Status",
+    "order": 6,
+    "width": 3,
+    "height": 1,
+    "format": "{{msg.payload}}",
+    "layout": "row-spread",
+    "style": false,
+    "font": "",
+    "fontSize": 16,
+    "color": "",
+    "className": "",
+    "x": 760,
+    "y": 500,
+    "wires": []
+  },
+  {
+    "id": "ui_chart_voltage",
+    "type": "ui-chart",
+    "z": "tab_battery_demo",
+    "group": "ui_group_battery",
+    "name": "Voltage over time",
+    "label": "Voltage over time",
+    "order": 7,
+    "chartType": "line",
+    "category": "topic",
+    "categoryType": "msg",
+    "xAxisLabel": "Time",
+    "xAxisProperty": "",
+    "xAxisPropertyType": "timestamp",
+    "yAxisLabel": "Voltage (V)",
+    "yAxisProperty": "payload",
+    "yAxisPropertyType": "msg",
+    "ymin": "45",
+    "ymax": "52",
+    "bins": 10,
+    "action": "append",
+    "stackSeries": false,
+    "pointShape": "circle",
+    "pointRadius": 3,
+    "showLegend": false,
+    "removeOlder": 1,
+    "removeOlderUnit": "3600",
+    "removeOlderPoints": "",
+    "colors": [
+      "#0094CE",
+      "#ff9900",
+      "#ff0000"
+    ],
+    "textColor": [
+      "#666666"
+    ],
+    "textColorDefault": true,
+    "gridColor": [
+      "#e5e5e5"
+    ],
+    "gridColorDefault": true,
+    "width": 9,
+    "height": 4,
+    "className": "",
+    "x": 760,
+    "y": 560,
+    "wires": [
+      []
+    ]
+  }
+]
