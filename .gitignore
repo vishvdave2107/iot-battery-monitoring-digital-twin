@@ -1,0 +1,19 @@
+# Arduino / build
+*.elf
+*.bin
+*.hex
+build/
+.cache/
+.vscode/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# Local credentials / configuration
+secrets.h
+credentials.h
+.env.*
